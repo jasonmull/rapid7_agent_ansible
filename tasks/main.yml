@@ -1,0 +1,30 @@
+# tasks/main.yml
+- name: Check if Rapid7 agent is already installed
+  ansible.windows.win_service_info:
+    name: "Rapid7 Insight Agent"
+  register: rapid7_service
+
+- name: Download Rapid7 agent installer
+  ansible.windows.win_get_url:
+    url: "{{ rapid7_installer_url }}"
+    dest: "{{ rapid7_temp_dir }}\\{{ rapid7_installer_name }}"
+  when: rapid7_service.services | length == 0
+
+- name: Install Rapid7 agent
+  ansible.windows.win_package:
+    path: "{{ rapid7_temp_dir }}\\{{ rapid7_installer_name }}"
+    arguments: '/quiet CUSTOMTOKEN="{{ rapid7_token }}" CUSTOMCONFIGPATH="{{ rapid7_config_path }}"'
+    state: present
+    expected_return_code: [0, 3010]
+  when: rapid7_service.services | length == 0
+
+- name: Start Rapid7 service
+  ansible.windows.win_service:
+    name: "Rapid7 Insight Agent"
+    state: started
+    start_mode: auto
+
+- name: Clean up installer
+  ansible.windows.win_file:
+    path: "{{ rapid7_temp_dir }}\\{{ rapid7_installer_name }}"
+    state: absent

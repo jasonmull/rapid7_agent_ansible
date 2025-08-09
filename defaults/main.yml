@@ -1,0 +1,6 @@
+# defaults/main.yml
+rapid7_installer_url: "https://us.storage.endpoint.ingress.rapid7.com/com.rapid7.razor.public/endpoint/agent/1746018309/windows/x86_64/PyForensicsAgent-x64.msi"
+rapid7_installer_name: "PyForensicsAgent-x64.msi"
+rapid7_temp_dir: "C:\\Windows\\Temp"
+rapid7_config_path: "C:\\Windows\\Temp"
+rapid7_token: ""
